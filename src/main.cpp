@@ -40,10 +40,13 @@ std::string hasData(std::string s) {
 int main()
 {
   uWS::Hub h;
-
+  /* pid object for the controlling of the steering wheel*/
   PID pid;
-  PID pid_t;
+  /* Initialize the pid object*/
   pid.Init(0.1, 0.0022, 2.4);
+  /* PID object for the controlling of velocity*/
+  PID pid_t;
+  /* Initialize object for velocity*/
   pid_t.Init(0.1, 0.0006, 7.0);
 
   h.onMessage([&pid, &pid_t](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode)
@@ -57,7 +60,8 @@ int main()
       if (s != "") {
         auto j = json::parse(s);
         std::string event = j[0].get<std::string>();
-        if (event == "telemetry") {
+        if (event == "telemetry") 
+		{
           // j[1] is the data JSON object
           double cte = std::stod(j[1]["cte"].get<std::string>());
           double speed = std::stod(j[1]["speed"].get<std::string>());
@@ -65,9 +69,16 @@ int main()
           double steer_value = 0;
 		  double throttle_value = MAX_THROTLE_VALUE;
 		  
+		  /* Control of the steering angle*/
+		  /* Update steering angle*/
 		  steer_value = pid.TotalError();
+		  /* update error of steering angle*/
 		  pid.UpdateError(cte);
+
+		  /* Control of velocity*/
+		  /*update the value of throtle*/
 		  throttle_value = MAX_THROTLE_VALUE - pid_t.TotalError();
+		  /*update the throtle error*/
 		  pid_t.UpdateError((cte));
 
           // DEBUG
@@ -82,7 +93,9 @@ int main()
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 
         }
-      } else {
+      } 
+	  else 
+	  {
         // Manual driving
         std::string msg = "42[\"manual\",{}]";
         ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
@@ -92,7 +105,8 @@ int main()
 
   // We don't need this since we're not using HTTP but if it's removed the program
   // doesn't compile :-(
-  h.onHttpRequest([](uWS::HttpResponse *res, uWS::HttpRequest req, char *data, size_t, size_t) {
+  h.onHttpRequest([](uWS::HttpResponse *res, uWS::HttpRequest req, char *data, size_t, size_t) 
+  {
     const std::string s = "<h1>Hello world!</h1>";
     if (req.getUrl().valueLength == 1)
     {
@@ -105,11 +119,13 @@ int main()
     }
   });
 
-  h.onConnection([&h](uWS::WebSocket<uWS::SERVER> ws, uWS::HttpRequest req) {
+  h.onConnection([&h](uWS::WebSocket<uWS::SERVER> ws, uWS::HttpRequest req) 
+  {
     std::cout << "Connected!!!" << std::endl;
   });
 
-  h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> ws, int code, char *message, size_t length) {
+  h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> ws, int code, char *message, size_t length) 
+  {
     ws.close();
     std::cout << "Disconnected" << std::endl;
   });

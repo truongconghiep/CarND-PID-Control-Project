@@ -26,22 +26,6 @@ public:
   double Ki;
   double Kd;
   
-  TwiddleState_ten TwiddleState;
-  TwiddleState_ten LastTwiddleState;
-  
-  int TwiddleRunningSteps;
-  
-  int TwiddleRunningCounter;
-  int AttrCounter;
-  
-  double TwiddleBestErr;
-  double TwiddleLastErr;
-  
-  double Tolerant;
-  double K[3];
-  double dk[3];
-
-
   /*
   * Constructor
   */
@@ -66,24 +50,6 @@ public:
   * Calculate the total PID error.
   */
   double TotalError();
-  
-  void TwiddleInit(int RunningSteps, TwiddleState_ten InitState, double Tolerant);
-  
-  bool Twiddle(float cte);
-  
-  bool IsTwiddleNeeded();
-  
-private:
-
-  void TwiddleRunningState(float cte);
-  
-  bool TwiddleProceed1();
-  
-  bool TwiddleProceed2();
-  
-  void TwiddleProceed3();
-  
-  float TwiddleSumDiff();
 };
 
 #endif /* PID_H */
