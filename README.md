@@ -65,9 +65,11 @@ steer_value = -Kp * CTE - Kd * diff_cte - Ki * int_cte
 
 Paramter tuning can be carried out with different methods like Ziegler-Nichols, Tyreus Luyben, Cohencoon, etc. In the lesson a twiddle algorithm for tuning is introduced. Since no system model of the simulation is provided, I decided to not use any tuning algorithm but manual tuning. First, I tuned the P value to keep the car driving on the track, then I tuned the D value to reduce the oscillation. After the car driving smoothly I tuned the I value to keep the car not leaving the trajectory, while it is driving around curves. My final hyperparameters after tuning:
 
+```
 Kp = 0.1
 Ki = 0.0022
 Kd = 2.4
+```
 
 ### PID velocity controller
 
